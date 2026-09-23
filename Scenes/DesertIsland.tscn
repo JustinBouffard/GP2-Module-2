@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://df5cbk7oix4e4"]
+
+[ext_resource type="Texture2D" uid="uid://cshjpfjylu5xb" path="res://HDRIs/citrus_orchard_road_puresky_4k.exr" id="1_4yc84"]
+[ext_resource type="Shader" uid="uid://cc5id0q2i3aaj" path="res://Shaders/water.gdshader" id="1_swjkc"]
+[ext_resource type="Material" uid="uid://qeaj77mri7do" path="res://Materials/rocky_terrain.tres" id="2_xoj5p"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_7qnrw"]
+panorama = ExtResource("1_4yc84")
+energy_multiplier = 0.5
+
+[sub_resource type="Sky" id="Sky_6s7jg"]
+sky_material = SubResource("PanoramaSkyMaterial_7qnrw")
+
+[sub_resource type="Environment" id="Environment_dfab5"]
+background_mode = 2
+sky = SubResource("Sky_6s7jg")
+glow_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xoj5p"]
+render_priority = 0
+shader = ExtResource("1_swjkc")
+shader_parameter/shallow_color = Color(0.1, 0.55, 0.55, 1)
+shader_parameter/deep_color = Color(0.02, 0.1, 0.25, 1)
+shader_parameter/depth_fade_distance = 8.0
+shader_parameter/normal_scroll_speed = 0.05
+shader_parameter/normal_tiling = 8.0
+shader_parameter/fresnel_power = 3.0
+shader_parameter/roughness_val = 0.05
+shader_parameter/wave1_dir = Vector2(1, 0.2)
+shader_parameter/wave1_steepness = 0.35
+shader_parameter/wave1_length = 14.0
+shader_parameter/wave2_dir = Vector2(1, 0.45)
+shader_parameter/wave2_steepness = 0.22
+shader_parameter/wave2_length = 7.0
+shader_parameter/wave3_dir = Vector2(1, -0.1)
+shader_parameter/wave3_steepness = 0.15
+shader_parameter/wave3_length = 3.5
+shader_parameter/wave4_dir = Vector2(1, 0.3)
+shader_parameter/wave4_steepness = 0.08
+shader_parameter/wave4_length = 1.6
+shader_parameter/distortion_strength = 2.5
+shader_parameter/chop_strength = 0.4
+shader_parameter/terrain_origin = Vector2(-256, -256)
+shader_parameter/terrain_size = Vector2(512, 512)
+shader_parameter/terrain_min_height = -100.0
+shader_parameter/terrain_max_height = 20.0
+shader_parameter/shore_depth = 8.0
+shader_parameter/break_depth = 2.0
+shader_parameter/shoal_height_gain = 0.6
+shader_parameter/shoal_steepen = 0.6
+shader_parameter/surf_height_decay = 0.25
+shader_parameter/runup_height = 0.6
+shader_parameter/swash_film = 0.03
+shader_parameter/foam_color = Color(0.7490196, 0.98039216, 1, 1)
+shader_parameter/foam_edge_width = 0.4
+shader_parameter/foam_scale = 1.5
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tvkbj"]
+material = SubResource("ShaderMaterial_xoj5p")
+size = Vector2(900, 900)
+subdivide_width = 500
+subdivide_depth = 500
+
+[sub_resource type="SphereMesh" id="SphereMesh_tvkbj"]
+material = ExtResource("2_xoj5p")
+radius = 150.0
+height = 69.903
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tvkbj"]
+top_radius = 0.0
+bottom_radius = 100.0
+height = 100.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bngka"]
+top_radius = 0.0
+bottom_radius = 130.0
+height = 150.0
+
+[node name="DesertIsland" type="Node3D" unique_id=1133709926]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1680636396]
+environment = SubResource("Environment_dfab5")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=9641835]
+transform = Transform3D(-0.38898134, -0.8596747, -0.33113962, 0.06682334, -0.3848298, 0.9205652, -0.91881907, 0.33595467, 0.20713814, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Water" type="MeshInstance3D" parent="." unique_id=1318906524]
+mesh = SubResource("PlaneMesh_tvkbj")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1215278369]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21.703442, 0)
+mesh = SubResource("SphereMesh_tvkbj")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1253594145]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88.631195, -21.703426, 76.50374)
+mesh = SubResource("SphereMesh_tvkbj")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=2099014647]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.95862, -24.74506, 128.73032)
+mesh = SubResource("SphereMesh_tvkbj")
+
+[node name="Mountain" type="MeshInstance3D" parent="." unique_id=1030458700]
+transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -164.2542, 34.71245, 30.294487)
+mesh = SubResource("CylinderMesh_tvkbj")
+
+[node name="Mountain5" type="MeshInstance3D" parent="." unique_id=595631290]
+transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -139.79718, 34.71245, -32.074333)
+mesh = SubResource("CylinderMesh_bngka")
+
+[node name="Mountain2" type="MeshInstance3D" parent="." unique_id=1822680062]
+transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -171.94075, 16.098457, 107.20528)
+mesh = SubResource("CylinderMesh_tvkbj")
+
+[node name="Mountain3" type="MeshInstance3D" parent="." unique_id=878274727]
+transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -147.06831, 5.93322, 153.16483)
+mesh = SubResource("CylinderMesh_tvkbj")
+
+[node name="Mountain4" type="MeshInstance3D" parent="." unique_id=542940872]
+transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -121.45956, -10.014412, 86.55533)
+mesh = SubResource("CylinderMesh_tvkbj")

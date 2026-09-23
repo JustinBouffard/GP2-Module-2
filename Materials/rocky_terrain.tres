@@ -1,0 +1,21 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://qeaj77mri7do"]
+
+[ext_resource type="Texture2D" uid="uid://dhd0y2ny377qh" path="res://Textures/Rocky_Terrain/rocky_terrain_02_diff_1k.png" id="1_7qnrw"]
+[ext_resource type="Texture2D" uid="uid://bpa2pmgbj5g2e" path="res://Textures/Rocky_Terrain/rocky_terrain_02_ao_1k.png" id="2_5ar1q"]
+[ext_resource type="Texture2D" uid="uid://6a4lim5sgkaj" path="res://Textures/Rocky_Terrain/rocky_terrain_02_arm_1k.png" id="3_o8066"]
+[ext_resource type="Texture2D" uid="uid://gdvylomq6spr" path="res://Textures/Rocky_Terrain/rocky_terrain_02_nor_dx_1k.png" id="4_7h2km"]
+[ext_resource type="Texture2D" uid="uid://baawk27r2t315" path="res://Textures/Rocky_Terrain/rocky_terrain_02_rough_1k.png" id="5_mv4fc"]
+
+[resource]
+albedo_color = Color(0.34057218, 0.67726994, 0.3445606, 1)
+albedo_texture = ExtResource("1_7qnrw")
+metallic = 1.0
+metallic_texture = ExtResource("3_o8066")
+metallic_texture_channel = 2
+roughness_texture = ExtResource("5_mv4fc")
+normal_enabled = true
+normal_texture = ExtResource("4_7h2km")
+ao_enabled = true
+ao_light_affect = 1.0
+ao_texture = ExtResource("2_5ar1q")
+uv1_scale = Vector3(5, 5, 5)
