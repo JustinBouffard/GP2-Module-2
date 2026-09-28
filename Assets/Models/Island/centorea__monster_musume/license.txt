@@ -1,0 +1,11 @@
+Model Information:
+* title:	Centorea ~ Monster Musume
+* source:	https://sketchfab.com/3d-models/centorea-monster-musume-87d69c3efb724df180f46a4f01d41ff7
+* author:	bucchm (https://sketchfab.com/bucchm)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Centorea ~ Monster Musume" (https://sketchfab.com/3d-models/centorea-monster-musume-87d69c3efb724df180f46a4f01d41ff7) by bucchm (https://sketchfab.com/bucchm) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

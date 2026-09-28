@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sea shack
+* source:	https://sketchfab.com/3d-models/sea-shack-7ef8de84a24e47a3be7a54ccccd0904a
+* author:	Kimppo (https://sketchfab.com/Kimppo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sea shack" (https://sketchfab.com/3d-models/sea-shack-7ef8de84a24e47a3be7a54ccccd0904a) by Kimppo (https://sketchfab.com/Kimppo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

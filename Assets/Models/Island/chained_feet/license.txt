@@ -1,0 +1,11 @@
+Model Information:
+* title:	chained_feet
+* source:	https://sketchfab.com/3d-models/chained-feet-27583fdaacbd461d85a0859c793f78a7
+* author:	snjvsngh_negi (https://sketchfab.com/snjvsngh_negi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "chained_feet" (https://sketchfab.com/3d-models/chained-feet-27583fdaacbd461d85a0859c793f78a7) by snjvsngh_negi (https://sketchfab.com/snjvsngh_negi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
