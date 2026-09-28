@@ -26,18 +26,30 @@ shader_parameter/normal_scroll_speed = 0.05
 shader_parameter/normal_tiling = 8.0
 shader_parameter/fresnel_power = 3.0
 shader_parameter/roughness_val = 0.05
-shader_parameter/wave1_dir = Vector2(1, 0.2)
+shader_parameter/wave1_dir = Vector2(1, 3)
 shader_parameter/wave1_steepness = 0.35
 shader_parameter/wave1_length = 14.0
-shader_parameter/wave2_dir = Vector2(1, 0.45)
+shader_parameter/wave2_dir = Vector2(1, 3)
 shader_parameter/wave2_steepness = 0.22
 shader_parameter/wave2_length = 7.0
-shader_parameter/wave3_dir = Vector2(1, -0.1)
+shader_parameter/wave3_dir = Vector2(1, -0.35)
 shader_parameter/wave3_steepness = 0.15
 shader_parameter/wave3_length = 3.5
 shader_parameter/wave4_dir = Vector2(1, 0.3)
 shader_parameter/wave4_steepness = 0.08
 shader_parameter/wave4_length = 1.6
+shader_parameter/wave5_dir = Vector2(1, 0.9)
+shader_parameter/wave5_steepness = 0.1
+shader_parameter/wave5_length = 11.7
+shader_parameter/wave6_dir = Vector2(0.9, -0.7)
+shader_parameter/wave6_steepness = 0.06
+shader_parameter/wave6_length = 5.9
+shader_parameter/wind_angle = 0.0
+shader_parameter/wave_variation = 0.5
+shader_parameter/wiggle_strength = 0.1210000057475
+shader_parameter/wiggle_cells = 1.0
+shader_parameter/variation_scale = 0.018
+shader_parameter/variation_speed = 0.02
 shader_parameter/distortion_strength = 2.5
 shader_parameter/chop_strength = 0.4
 shader_parameter/terrain_origin = Vector2(-256, -256)
@@ -52,7 +64,7 @@ shader_parameter/surf_height_decay = 0.25
 shader_parameter/runup_height = 0.6
 shader_parameter/swash_film = 0.03
 shader_parameter/foam_color = Color(0.7490196, 0.98039216, 1, 1)
-shader_parameter/foam_edge_width = 0.4
+shader_parameter/foam_edge_width = 3.58
 shader_parameter/foam_scale = 1.5
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_tvkbj"]
@@ -85,37 +97,39 @@ environment = SubResource("Environment_dfab5")
 transform = Transform3D(-0.38898134, -0.8596747, -0.33113962, 0.06682334, -0.3848298, 0.9205652, -0.91881907, 0.33595467, 0.20713814, 0, 0, 0)
 shadow_enabled = true
 
-[node name="Water" type="MeshInstance3D" parent="." unique_id=1318906524]
+[node name="Env" type="Node3D" parent="." unique_id=299116581]
+
+[node name="Water" type="MeshInstance3D" parent="Env" unique_id=1318906524]
 mesh = SubResource("PlaneMesh_tvkbj")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1215278369]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Env" unique_id=1215278369]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -21.703442, 0)
 mesh = SubResource("SphereMesh_tvkbj")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1253594145]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Env" unique_id=1253594145]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -88.631195, -21.703426, 76.50374)
 mesh = SubResource("SphereMesh_tvkbj")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=2099014647]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Env" unique_id=2099014647]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.95862, -24.74506, 128.73032)
 mesh = SubResource("SphereMesh_tvkbj")
 
-[node name="Mountain" type="MeshInstance3D" parent="." unique_id=1030458700]
+[node name="Mountain" type="MeshInstance3D" parent="Env" unique_id=1030458700]
 transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -164.2542, 34.71245, 30.294487)
 mesh = SubResource("CylinderMesh_tvkbj")
 
-[node name="Mountain5" type="MeshInstance3D" parent="." unique_id=595631290]
+[node name="Mountain5" type="MeshInstance3D" parent="Env" unique_id=595631290]
 transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -139.79718, 34.71245, -32.074333)
 mesh = SubResource("CylinderMesh_bngka")
 
-[node name="Mountain2" type="MeshInstance3D" parent="." unique_id=1822680062]
+[node name="Mountain2" type="MeshInstance3D" parent="Env" unique_id=1822680062]
 transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -171.94075, 16.098457, 107.20528)
 mesh = SubResource("CylinderMesh_tvkbj")
 
-[node name="Mountain3" type="MeshInstance3D" parent="." unique_id=878274727]
+[node name="Mountain3" type="MeshInstance3D" parent="Env" unique_id=878274727]
 transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -147.06831, 5.93322, 153.16483)
 mesh = SubResource("CylinderMesh_tvkbj")
 
-[node name="Mountain4" type="MeshInstance3D" parent="." unique_id=542940872]
+[node name="Mountain4" type="MeshInstance3D" parent="Env" unique_id=542940872]
 transform = Transform3D(0.96642685, 0, 0.25694203, 0, 1, 0, -0.25694203, 0, 0.96642685, -121.45956, -10.014412, 86.55533)
 mesh = SubResource("CylinderMesh_tvkbj")

@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 
-// The wave math here MUST match ocean_buoyancy.gd, including the shore scaling (height_scale / push_scale).
+// The wave math here MUST match ocean_buoyancy.gd, including the shore scaling (height_scale / push_scale), the per-wave seed, the wind angle, and the amplitude/wiggle noise.
 
 uniform vec4 shallow_color : source_color = vec4(0.10, 0.55, 0.55, 1.0);
 uniform vec4 deep_color : source_color = vec4(0.02, 0.10, 0.25, 1.0);
@@ -17,20 +17,35 @@ uniform float roughness_val : hint_range(0.0, 1.0) = 0.05;
 uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;
 
 uniform vec2 wave1_dir = vec2(1.0, 0.2);
-uniform float wave1_steepness = 0.35;
-uniform float wave1_length = 14.0;
+uniform float wave1_steepness = 0.30;
+uniform float wave1_length = 17.3;
 
-uniform vec2 wave2_dir = vec2(1.0, 0.45);
-uniform float wave2_steepness = 0.22;
-uniform float wave2_length = 7.0;
+uniform vec2 wave2_dir = vec2(0.8, 0.65);
+uniform float wave2_steepness = 0.20;
+uniform float wave2_length = 9.1;
 
-uniform vec2 wave3_dir = vec2(1.0, -0.1);
-uniform float wave3_steepness = 0.15;
-uniform float wave3_length = 3.5;
+uniform vec2 wave3_dir = vec2(1.0, -0.35);
+uniform float wave3_steepness = 0.14;
+uniform float wave3_length = 4.3;
 
-uniform vec2 wave4_dir = vec2(1.0, 0.3);
+uniform vec2 wave4_dir = vec2(0.5, 1.0);
 uniform float wave4_steepness = 0.08;
-uniform float wave4_length = 1.6;
+uniform float wave4_length = 2.1;
+
+uniform vec2 wave5_dir = vec2(1.0, 0.9);
+uniform float wave5_steepness = 0.10;
+uniform float wave5_length = 11.7;
+
+uniform vec2 wave6_dir = vec2(0.9, -0.7);
+uniform float wave6_steepness = 0.06;
+uniform float wave6_length = 5.9;
+
+uniform float wind_angle : hint_range(-180.0, 180.0) = 0.0;
+uniform float wave_variation : hint_range(0.0, 0.9) = 0.5;
+uniform float wiggle_strength : hint_range(0.0, 1.5) = 0.5;
+uniform float wiggle_cells : hint_range(1.0, 12.0) = 4.0;
+uniform float variation_scale = 0.018;
+uniform float variation_speed = 0.02;
 
 uniform float distortion_strength = 2.5;
 uniform float chop_strength = 0.4;
@@ -87,13 +102,21 @@ float terrain_height_at(vec2 world_xz) {
 	return mix(terrain_min_height, h, inside);
 }
 
-vec3 gerstner_wave(vec2 dir, float steepness, float wavelength, vec2 pos, float time, float height_scale, float push_scale, inout vec3 tangent, inout vec3 binormal) {
+vec3 gerstner_wave(vec2 dir, float steepness, float wavelength, vec2 pos, float time, float height_scale, float push_scale, float seed, inout vec3 tangent, inout vec3 binormal) {
 	float k = 2.0 * PI / wavelength;
 	float c = sqrt(9.8 / k);
-	vec2 d = normalize(dir);
-	float f = k * (dot(d, pos) - c * time);
-	float steep_v = steepness * height_scale;
-	float steep_h = steepness * push_scale;
+
+	float amp_n = value_noise(pos * variation_scale + vec2(seed * 17.3, seed * 9.7) + time * variation_speed);
+	float amp = mix(1.0 - wave_variation, 1.0 + wave_variation * 0.5, amp_n);
+
+	float warp_n = value_noise(pos / (wavelength * wiggle_cells) + vec2(seed * 5.1, seed * 13.9) - time * variation_speed);
+	vec2 d0 = normalize(dir);
+	float wa = radians(wind_angle);
+	vec2 d = vec2(d0.x * cos(wa) - d0.y * sin(wa), d0.x * sin(wa) + d0.y * cos(wa));
+	float f = k * (dot(d, pos) - c * time) + seed * 2.399 + (warp_n - 0.5) * 4.0 * PI * wiggle_strength;
+
+	float steep_v = steepness * height_scale * amp;
+	float steep_h = steepness * push_scale * amp;
 	float av = steep_v / k;
 	float ah = steep_h / k;
 
@@ -136,18 +159,17 @@ void vertex() {
 	vec3 binormal = vec3(0.0, 0.0, 1.0);
 	vec3 offset = vec3(0.0);
 
-	offset += gerstner_wave(wave1_dir, wave1_steepness, wave1_length, distorted_pos, time, height_scale, push_scale, tangent, binormal);
-	offset += gerstner_wave(wave2_dir, wave2_steepness, wave2_length, distorted_pos, time, height_scale, push_scale, tangent, binormal);
-	offset += gerstner_wave(wave3_dir, wave3_steepness, wave3_length, distorted_pos, time, height_scale, push_scale, tangent, binormal);
-	offset += gerstner_wave(wave4_dir, wave4_steepness, wave4_length, distorted_pos, time, height_scale, push_scale, tangent, binormal);
+	offset += gerstner_wave(wave1_dir, wave1_steepness, wave1_length, distorted_pos, time, height_scale, push_scale, 1.0, tangent, binormal);
+	offset += gerstner_wave(wave2_dir, wave2_steepness, wave2_length, distorted_pos, time, height_scale, push_scale, 2.0, tangent, binormal);
+	offset += gerstner_wave(wave3_dir, wave3_steepness, wave3_length, distorted_pos, time, height_scale, push_scale, 3.0, tangent, binormal);
+	offset += gerstner_wave(wave4_dir, wave4_steepness, wave4_length, distorted_pos, time, height_scale, push_scale, 4.0, tangent, binormal);
+	offset += gerstner_wave(wave5_dir, wave5_steepness, wave5_length, distorted_pos, time, height_scale, push_scale, 5.0, tangent, binormal);
+	offset += gerstner_wave(wave6_dir, wave6_steepness, wave6_length, distorted_pos, time, height_scale, push_scale, 6.0, tangent, binormal);
 
 	float chop_noise = fbm_noise(pos2d * 0.6, time * 1.5) - 0.5;
 	offset.y += chop_noise * chop_strength * (1.0 - surf);
 
-	vec2 d1 = normalize(wave1_dir);
-	float k1 = 2.0 * PI / wave1_length;
-	float phase1 = k1 * (dot(d1, distorted_pos) - sqrt(9.8 / k1) * time);
-	float crest = 0.5 + 0.5 * sin(phase1);
+	float crest = clamp(0.5 + 0.5 * offset.y / 1.4, 0.0, 1.0);
 
 	float reach = runup_height * pow(crest, 1.5);
 	float wet = 1.0 - smoothstep(reach * 0.7, reach + 0.001, -depth);
@@ -166,8 +188,9 @@ void vertex() {
 }
 
 void fragment() {
-	vec2 uv1 = UV * normal_tiling + vec2(TIME * normal_scroll_speed, TIME * normal_scroll_speed * 0.5);
-	vec2 uv2 = UV * normal_tiling * 1.7 - vec2(TIME * normal_scroll_speed * 0.7, TIME * normal_scroll_speed * 0.3);
+	vec2 warp = vec2(fbm_noise(world_pos.xz * 0.05, TIME), fbm_noise(world_pos.xz * 0.05 + 31.7, TIME)) - 0.35;
+	vec2 uv1 = UV * normal_tiling + warp * 0.6 + vec2(TIME * normal_scroll_speed, TIME * normal_scroll_speed * 0.5);
+	vec2 uv2 = UV * normal_tiling * 1.7 - warp * 0.4 - vec2(TIME * normal_scroll_speed * 0.7, TIME * normal_scroll_speed * 0.3);
 	vec3 n1 = texture(normal_map, uv1).rgb * 2.0 - 1.0;
 	vec3 n2 = texture(normal_map, uv2).rgb * 2.0 - 1.0;
 	vec3 detail_normal = normalize(vec3(n1.xy + n2.xy, n1.z + n2.z));
