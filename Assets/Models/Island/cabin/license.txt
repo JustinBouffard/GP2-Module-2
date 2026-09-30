@@ -1,0 +1,11 @@
+Model Information:
+* title:	Cabin
+* source:	https://sketchfab.com/3d-models/cabin-b02b8de5e8374fa182d2561275177320
+* author:	Lukaas (https://sketchfab.com/Lukaas04)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Cabin" (https://sketchfab.com/3d-models/cabin-b02b8de5e8374fa182d2561275177320) by Lukaas (https://sketchfab.com/Lukaas04) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

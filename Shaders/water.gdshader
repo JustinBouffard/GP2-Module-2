@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 
-// The wave math here MUST match ocean_buoyancy.gd, including the shore scaling (height_scale / push_scale), the per-wave seed, the wind angle, and the amplitude/wiggle noise.
+// The wave math here MUST match ocean_buoyancy.gd, including the shore scaling (height_scale / push_scale), the per-wave seed, the wind angle, the amplitude/wiggle noise, and the island wrap / lee shadow weights.
 
 uniform vec4 shallow_color : source_color = vec4(0.10, 0.55, 0.55, 1.0);
 uniform vec4 deep_color : source_color = vec4(0.02, 0.10, 0.25, 1.0);
@@ -46,6 +46,12 @@ uniform float wiggle_strength : hint_range(0.0, 1.5) = 0.5;
 uniform float wiggle_cells : hint_range(1.0, 12.0) = 4.0;
 uniform float variation_scale = 0.018;
 uniform float variation_speed = 0.02;
+
+uniform vec2 island_center = vec2(0.0, 0.0);
+uniform float island_radius = 70.0;
+uniform float island_wrap_range = 90.0;
+uniform float island_wrap_strength : hint_range(0.0, 1.0) = 0.85;
+uniform float lee_shadow : hint_range(0.0, 1.0) = 0.6;
 
 uniform float distortion_strength = 2.5;
 uniform float chop_strength = 0.4;
@@ -113,28 +119,57 @@ vec3 gerstner_wave(vec2 dir, float steepness, float wavelength, vec2 pos, float 
 	vec2 d0 = normalize(dir);
 	float wa = radians(wind_angle);
 	vec2 d = vec2(d0.x * cos(wa) - d0.y * sin(wa), d0.x * sin(wa) + d0.y * cos(wa));
-	float f = k * (dot(d, pos) - c * time) + seed * 2.399 + (warp_n - 0.5) * 4.0 * PI * wiggle_strength;
+	float phase_off = seed * 2.399 + (warp_n - 0.5) * 4.0 * PI * wiggle_strength;
+
+	vec2 rel = pos - island_center;
+	float r = length(rel);
+	vec2 d_in = -rel / max(r, 0.001);
+	float w_radial = island_wrap_strength * (1.0 - smoothstep(island_radius, island_radius + island_wrap_range, r));
+
+	float along = dot(rel, d);
+	float lateral = abs(dot(rel, vec2(-d.y, d.x)));
+	float lee = smoothstep(0.0, island_radius, along) * (1.0 - smoothstep(island_radius * 0.8, island_radius * 1.6, lateral));
+	float w_planar = (1.0 - w_radial) * (1.0 - lee_shadow * lee);
+
+	float f_p = k * (dot(d, pos) - c * time) + phase_off;
+	float f_r = k * (-r - c * time) + phase_off;
+	float sp = sin(f_p);
+	float cp = cos(f_p);
+	float sr = sin(f_r);
+	float cr = cos(f_r);
 
 	float steep_v = steepness * height_scale * amp;
 	float steep_h = steepness * push_scale * amp;
 	float av = steep_v / k;
 	float ah = steep_h / k;
 
-	tangent += vec3(
-		-d.x * d.x * steep_h * sin(f),
-		d.x * steep_v * cos(f),
-		-d.x * d.y * steep_h * sin(f)
+	tangent += w_planar * vec3(
+		-d.x * d.x * steep_h * sp,
+		d.x * steep_v * cp,
+		-d.x * d.y * steep_h * sp
+	) + w_radial * vec3(
+		-d_in.x * d_in.x * steep_h * sr,
+		d_in.x * steep_v * cr,
+		-d_in.x * d_in.y * steep_h * sr
 	);
-	binormal += vec3(
-		-d.x * d.y * steep_h * sin(f),
-		d.y * steep_v * cos(f),
-		-d.y * d.y * steep_h * sin(f)
+	binormal += w_planar * vec3(
+		-d.x * d.y * steep_h * sp,
+		d.y * steep_v * cp,
+		-d.y * d.y * steep_h * sp
+	) + w_radial * vec3(
+		-d_in.x * d_in.y * steep_h * sr,
+		d_in.y * steep_v * cr,
+		-d_in.y * d_in.y * steep_h * sr
 	);
 
-	return vec3(
-		d.x * ah * cos(f),
-		av * sin(f),
-		d.y * ah * cos(f)
+	return w_planar * vec3(
+		d.x * ah * cp,
+		av * sp,
+		d.y * ah * cp
+	) + w_radial * vec3(
+		d_in.x * ah * cr,
+		av * sr,
+		d_in.y * ah * cr
 	);
 }
 
